@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Header from './components/Header';
+import InfoPanel from './components/InfoPanel';
+import ActionButtons from './components/ActionButtons';
 import './App.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
@@ -40,7 +43,7 @@ class App extends Component {
 
     const interval = setInterval(() => {
       if (this.state.timeLeft > 0) {
-        this.setState({timeLeft: this.state.timeLeft -1 });
+        this.setState({timeLeft: this.state.timeLeft - 1 });
       } else {
         clearInterval(interval);
         this.setState({isPlaying: false});
@@ -51,7 +54,19 @@ class App extends Component {
   };
 
   endGame = () => {
-    this.setState({isPlaying: false, timeLeft: 0});
+    let {topScore, score} = this.state;
+    if (score > topScore) topScore = score;
+
+    this.stream.stop();
+
+    this.setState({
+      topScore, 
+      score: 0, 
+      isPlaying: false, 
+      timeLeft: 0, 
+      isListening: false,
+      text: ""
+    });
   };
 
   testPhrase = () => {
@@ -63,6 +78,7 @@ class App extends Component {
 
   nextWord = () => {
     this.setState({
+      timeLeft: this.state.timeLeft + 2,
       currentWord: this.state.wordList[0],
       wordList: this.state.wordList.slice(1)
     });
@@ -74,7 +90,7 @@ class App extends Component {
         return response.text();
       }).then((token) => {
         console.log("got a token:", token);
-        let stream = recognizeMic({
+        this.stream = recognizeMic({
           token,
           objectMode: true,
           extractResults: true,
@@ -83,7 +99,7 @@ class App extends Component {
 
         this.setState({isListening: true});
 
-        stream.on('data', (data) => {
+        this.stream.on('data', (data) => {
           this.setState({
             text: data.alternatives[0].transcript
           });
@@ -91,15 +107,11 @@ class App extends Component {
           this.testPhrase();
         });
 
-        stream.on('error', (err) => {
+        this.stream.on('error', (err) => {
           console.log(err);
         });
 
-        document.getElementById('stopButton').onclick = () => {
-          this.setState({isListening: false});
-          this.endGame();
-          stream.stop();
-        }
+        document.getElementById('stopButton').onclick = this.endGame;
 
         this.getWords()
         .then((wordList) => {
@@ -112,32 +124,19 @@ class App extends Component {
   }
 
   render() {
-    let opts = {};
-    if (!this.state.isListening) {
-      opts.disabled = 'disabled'
-    }
-
+    const {currentWord, text, timeLeft, score, topScore, isPlaying} = this.state;
     return (
       <div className="App">
-        <header className="m-header">
-          <h1 className="m-title">The Word Is...<span className="m-currentWord">{this.state.currentWord}</span></h1>
-        </header>
+        <Header currentWord={currentWord} 
+                text={text} />
+        <InfoPanel timeLeft={timeLeft}
+                   score={score}
+                   topScore={topScore}
+                   isPlaying={isPlaying} />
         <section>
-          <p className="m-countdown">Time Left: {this.state.timeLeft}</p>
-          <p className="m-score">{this.state.isPlaying ? `${this.state.score} points` : ""}</p>
-        </section>
-        <section>
-          <nav>
-            {
-              !this.state.isListening ?
-              <button onClick={this.clickHandler}>Start Playing</button> :
-              <button onClick={this.nextWord}>Skip Word</button>
-            }
-          </nav>
-          <button id="stopButton" {...opts}>Stop Playing</button>
-          <div className="m-watson-text">
-            {this.state.text}
-          </div>
+          <ActionButtons isListening={this.state.isListening} 
+                         startPlaying={this.clickHandler} 
+                         nextWord={this.nextWord} />
         </section>
       </div>
     );
