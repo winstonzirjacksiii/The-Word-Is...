@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
@@ -13,12 +12,15 @@ class App extends Component {
       isPlaying: false,
       wordList: [],
       currentWord: "",
+      score: 0,
+      topScore: 0,
       timeLeft: 0
     };
   }
 
   getWords = () => {
-    fetch(`//api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=4&maxLength=10&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5`)
+    return new Promise( (resolve, reject) => {
+      fetch(`//api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=6&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5`)
       .then((response) => {
         return response.json()
       }).then((data) => {
@@ -26,12 +28,12 @@ class App extends Component {
           rV.push(x.word);
           return rV;
         },[]);
-        this.setState({wordList});
-        this.startGame();
+        resolve(wordList);
       }).catch((error) => {
         console.log(error);
       });
-  }
+    });
+  };
 
   startGame = () => {
     this.setState({isPlaying: true, timeLeft:60 });
@@ -46,11 +48,18 @@ class App extends Component {
     }, 1000);
 
     this.nextWord();
-  }
+  };
 
   endGame = () => {
     this.setState({isPlaying: false, timeLeft: 0});
-  }
+  };
+
+  testPhrase = () => {
+    if ( this.state.text.match(new RegExp("The word is " + this.state.currentWord, "gi")) ) {
+      this.nextWord();
+      this.setState({score: this.state.score + 1});
+    }
+  };
 
   nextWord = () => {
     this.setState({
@@ -78,6 +87,8 @@ class App extends Component {
           this.setState({
             text: data.alternatives[0].transcript
           });
+
+          this.testPhrase();
         });
 
         stream.on('error', (err) => {
@@ -90,7 +101,11 @@ class App extends Component {
           stream.stop();
         }
 
-        this.getWords();
+        this.getWords()
+        .then((wordList) => {
+          this.setState({wordList});
+          this.startGame();
+        });
       }).catch((error) => {
         console.log(error);
       });
@@ -104,23 +119,22 @@ class App extends Component {
 
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to The Word Is...</h1>
-          <p>Time Left: {this.state.timeLeft}</p>
+        <header className="m-header">
+          <h1 className="m-title">The Word Is...<span className="m-currentWord">{this.state.currentWord}</span></h1>
         </header>
         <section>
-          {
-            !this.state.isListening &&
-            <button onClick={this.clickHandler}>Listen to Microphone</button>
-          }
-          <button id="stopButton" {...opts}>Stop Listening!</button>
-          <div className="m-current-word">
+          <p className="m-countdown">Time Left: {this.state.timeLeft}</p>
+          <p className="m-score">{this.state.isPlaying ? `${this.state.score} points` : ""}</p>
+        </section>
+        <section>
+          <nav>
             {
-              this.state.isPlaying &&
-              `The word is: ${this.state.currentWord}` 
+              !this.state.isListening ?
+              <button onClick={this.clickHandler}>Start Playing</button> :
+              <button onClick={this.nextWord}>Skip Word</button>
             }
-          </div>
+          </nav>
+          <button id="stopButton" {...opts}>Stop Playing</button>
           <div className="m-watson-text">
             {this.state.text}
           </div>
