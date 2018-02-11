@@ -6,19 +6,27 @@ import './App.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
 
+const initialActiveState = {
+  "phrase": false,
+  "current": false
+};
+
+const initialState = {
+  text: "",
+  isListening: false,
+  isPlaying: false,
+  wordList: [],
+  currentWord: "",
+  score: 0,
+  topScore: 0,
+  timeLeft: 0,
+  active: initialActiveState
+};
+
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      text: "",
-      isListening: false,
-      isPlaying: false,
-      wordList: [],
-      currentWord: "",
-      score: 0,
-      topScore: 0,
-      timeLeft: 0
-    };
+    this.state = initialState;
   }
 
   getWords = () => {
@@ -46,7 +54,7 @@ class App extends Component {
         this.setState({timeLeft: this.state.timeLeft - 1 });
       } else {
         clearInterval(interval);
-        this.setState({isPlaying: false});
+        this.endGame();
       }
     }, 1000);
 
@@ -60,27 +68,38 @@ class App extends Component {
     this.stream.stop();
 
     this.setState({
+      ...initialState,
       topScore, 
-      score: 0, 
-      isPlaying: false, 
-      timeLeft: 0, 
-      isListening: false,
-      text: ""
     });
   };
 
   testPhrase = () => {
-    if ( this.state.text.match(new RegExp("The word is " + this.state.currentWord, "gi")) ) {
+    let { text, active, currentWord } = this.state;
+    active.phrase = text.match(new RegExp("the word is", "gi")) ? true : false;
+    active.current = text.match(new RegExp(currentWord, "gi")) ? true : false;
+
+    this.setState({
+      active: {
+        "phrase": active.phrase,
+        "current": active.current
+      }
+    });
+
+    if ( active.phrase && active.current ) {
+      this.setState({
+        score: this.state.score + 1,
+        timeLeft: this.state.timeLeft + 2
+      });
       this.nextWord();
-      this.setState({score: this.state.score + 1});
     }
   };
 
   nextWord = () => {
     this.setState({
-      timeLeft: this.state.timeLeft + 2,
       currentWord: this.state.wordList[0],
-      wordList: this.state.wordList.slice(1)
+      wordList: this.state.wordList.slice(1),
+      text: "",
+      active: initialActiveState
     });
   }
 
@@ -89,7 +108,6 @@ class App extends Component {
       .then((response) => {
         return response.text();
       }).then((token) => {
-        console.log("got a token:", token);
         this.stream = recognizeMic({
           token,
           objectMode: true,
@@ -124,11 +142,12 @@ class App extends Component {
   }
 
   render() {
-    const {currentWord, text, timeLeft, score, topScore, isPlaying} = this.state;
+    const {currentWord, text, timeLeft, score, topScore, isPlaying, active} = this.state;
     return (
       <div className="App">
         <Header currentWord={currentWord} 
-                text={text} />
+                text={text}
+                active={active} />
         <InfoPanel timeLeft={timeLeft}
                    score={score}
                    topScore={topScore}
