@@ -15,6 +15,7 @@ const initialState = {
   text: "",
   isListening: false,
   isPlaying: false,
+  isResting: false,
   wordList: [],
   currentWord: "",
   score: 0,
@@ -31,7 +32,7 @@ class App extends Component {
 
   getWords = () => {
     return new Promise( (resolve, reject) => {
-      fetch(`//api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=6&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5`)
+      fetch(`//api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=1&minLength=3&maxLength=6&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5`)
       .then((response) => {
         return response.json()
       }).then((data) => {
@@ -95,12 +96,19 @@ class App extends Component {
   };
 
   nextWord = () => {
-    this.setState({
-      currentWord: this.state.wordList[0],
-      wordList: this.state.wordList.slice(1),
-      text: "",
-      active: initialActiveState
-    });
+    if (!this.state.isResting) {
+      this.setState({isResting:true});
+
+      setTimeout((function resolveNewWordTimeout(){
+        this.setState({
+          currentWord: this.state.wordList[0],
+          wordList: this.state.wordList.slice(1),
+          text: "",
+          active: initialActiveState,
+          isResting:false
+        });
+      }).bind(this), 2000);
+    }
   }
 
   clickHandler = () => {
@@ -118,11 +126,12 @@ class App extends Component {
         this.setState({isListening: true});
 
         this.stream.on('data', (data) => {
-          this.setState({
-            text: data.alternatives[0].transcript
-          });
-
-          this.testPhrase();
+          if (!this.state.isResting) { 
+            this.setState({
+              text: data.alternatives[0].transcript
+            });
+            this.testPhrase();
+          }
         });
 
         this.stream.on('error', (err) => {
@@ -142,18 +151,20 @@ class App extends Component {
   }
 
   render() {
-    const {currentWord, text, timeLeft, score, topScore, isPlaying, active} = this.state;
+    const {currentWord, text, timeLeft, score, topScore, isPlaying, active, isListening, isResting} = this.state;
     return (
       <div className="App">
         <Header currentWord={currentWord} 
                 text={text}
-                active={active} />
+                active={active}
+                isResting={isResting} />
         <InfoPanel timeLeft={timeLeft}
                    score={score}
                    topScore={topScore}
                    isPlaying={isPlaying} />
         <section>
-          <ActionButtons isListening={this.state.isListening} 
+          <ActionButtons isResting={isResting}
+                         isListening={isListening} 
                          startPlaying={this.clickHandler} 
                          nextWord={this.nextWord} />
         </section>

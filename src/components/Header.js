@@ -1,7 +1,7 @@
 import React from 'react';
 import SlideText from './SlideText';
 
-function Header({currentWord, text, active}) {
+function Header({currentWord, text, active, isResting}) {
   return (
     <header className="m-header">
       <h1 className="m-title">
