@@ -7,6 +7,7 @@ const app = express();
 const watson = require('watson-developer-cloud');
 const vcapServices = require('vcap_services');
 const cors = require('cors');
+const path = requirgit ine('path');
 
 
 // allows environment properties to be set in a file named .env
