@@ -6,6 +6,9 @@ import './App.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
 
+let apiRoot = ""
+// let apiRoot = "//localhost:3002"
+
 const initialActiveState = {
   "phrase": false,
   "current": false
@@ -112,7 +115,7 @@ class App extends Component {
   }
 
   clickHandler = () => {
-    fetch('//localhost:3002/api/speech-to-text/token')
+    fetch(apiRoot + '/api/speech-to-text/token')
       .then((response) => {
         return response.text();
       }).then((token) => {
