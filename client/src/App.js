@@ -35,7 +35,7 @@ class App extends Component {
 
   getWords = () => {
     return new Promise( (resolve, reject) => {
-      fetch(`//api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=1&minLength=3&maxLength=6&limit=100&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5`)
+      fetch(`//api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=1&minLength=3&maxLength=6&limit=100&api_key=5dea0ac0206bd920cd1dc37eead1dfa3d485815cfbd8344a5`)
       .then((response) => {
         return response.json()
       }).then((data) => {
