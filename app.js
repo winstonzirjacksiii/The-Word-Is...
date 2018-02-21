@@ -34,7 +34,7 @@ if (process.env.VCAP_SERVICES) {
   app.use(secure());
 }
 
-app.use(express.static(__dirname + '/static'));
+app.use(express.static(__dirname + '/client/build'));
 app.use(cors());
 
 // token endpoints
@@ -69,6 +69,8 @@ app.use('/api/speech-to-text/token', function(req, res) {
 app.use(function(req, res, next) {
   if (request.method === 'GET' && request.accepts('html') && !request.is('json') && !request.path.includes('.')) {
     response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+  } else {
+    next();
   }
 });
 
