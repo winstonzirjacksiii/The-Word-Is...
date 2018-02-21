@@ -65,6 +65,10 @@ app.use('/api/speech-to-text/token', function(req, res) {
   );
 });
 
+app.get('*', function(request, response) {
+  response.sendFile(path.resolve(__dirname, '/client/build', 'index.html'));
+});
+
 
 const port = process.env.PORT || process.env.VCAP_APP_PORT || 3000;
 app.listen(port, function() {

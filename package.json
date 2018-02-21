@@ -1,6 +1,9 @@
 {
   "name": "the-word-is--server",
   "version": "0.1.0",
+  "engines": {
+    "node": "9.2.x"
+  },
   "private": true,
   "dependencies": {
     "cors": "^2.8.4",
@@ -12,9 +15,11 @@
     "watson-developer-cloud": "^3.0.6",
     "watson-speech": "^0.34.1"
   },
+  "cacheDirectories": [
+    "node_modules",
+    "react-ui/node_modules"
+  ],
   "scripts": {
-    "start": "node app.js",
-    "test": "",
-    "eject": ""
+    "start": "node app.js"
   }
 }
