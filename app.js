@@ -66,8 +66,10 @@ app.use('/api/speech-to-text/token', function(req, res) {
   );
 });
 
-app.get('*', function(request, response) {
-  response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+app.use(function(req, res, next) {
+  if (request.method === 'GET' && request.accepts('html') && !request.is('json') && !request.path.includes('.')) {
+    response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+  }
 });
 
 
