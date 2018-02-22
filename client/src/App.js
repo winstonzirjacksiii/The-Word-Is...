@@ -12,7 +12,7 @@ let apiRoot = ""
 // let apiRoot = "//localhost:3002"
 
 const initialActiveState = {
-  "phrase": false,
+  "phrase": false, 
   "current": false
 };
 
