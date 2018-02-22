@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Header from './components/Header';
 import InfoPanel from './components/InfoPanel';
 import ActionButtons from './components/ActionButtons';
+import { getWord } from './modules/wordlist';
+
 import './App.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
@@ -33,7 +35,7 @@ class App extends Component {
     this.state = initialState;
   }
 
-  getWords = () => {
+  getWordsWordnik = () => {
     return new Promise( (resolve, reject) => {
       fetch(`//api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=false&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=1&minLength=3&maxLength=6&limit=100&api_key=5dea0ac0206bd920cd1dc37eead1dfa3d485815cfbd8344a5`)
       .then((response) => {
@@ -98,7 +100,7 @@ class App extends Component {
     }
   };
 
-  nextWord = () => {
+  nextWordWordnik = () => {
     if (!this.state.isResting) {
       this.setState({isResting:true});
 
@@ -112,7 +114,22 @@ class App extends Component {
         });
       }).bind(this), 2000);
     }
-  }
+  };
+
+  nextWord = () => {
+    if (!this.state.isResting) {
+      this.setState({isResting:true});
+
+      setTimeout((function resolveNewWordTimeout(){
+        this.setState({
+          currentWord: getWord(),
+          text: "",
+          active: initialActiveState,
+          isResting:false
+        });
+      }).bind(this), 2000);
+    }
+  };
 
   clickHandler = () => {
     fetch(apiRoot + '/api/speech-to-text/token')
@@ -142,12 +159,7 @@ class App extends Component {
         });
 
         document.getElementById('stopButton').onclick = this.endGame;
-
-        this.getWords()
-        .then((wordList) => {
-          this.setState({wordList});
-          this.startGame();
-        });
+        this.startGame();
       }).catch((error) => {
         console.log(error);
       });
