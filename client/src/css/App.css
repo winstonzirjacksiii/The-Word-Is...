@@ -4,13 +4,44 @@ body, html {
   font: 14px/1.5 'Open Sans', sans-serif;
   background: #aabbed;
   color:#ffffff;
+  text-align:center;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .l-relative {position:relative;}
 
+.m-app {margin:20px;}
+
 .m-title {
   font-family: 'Kaushan Script', cursive;
   font-size:60px;
+}
+
+.m-header {
+  display:inline-block;
+  position:relative;
+  padding:40px;
+  border-radius:10px;
+  border:4px solid #ffff;
+  width:auto;
+  text-align:left;
+  background-color:#7f90c1;
+}
+.m-header--content {
+  margin-top:-15px;
+}
+.m-watson-text {
+  font-size:15px;
+  height:15px;
+  width:100%;
+  text-align:center;
+  font-style:italic;
+  opacity:0.8;
 }
 
 .m-currentWord {
@@ -19,6 +50,44 @@ body, html {
   font-weight:700;
 
   margin-left:20px;
+}
+
+.m-btn {
+  background:#576ba5;
+  color: #fff;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: inherit;
+  font-size:2em;
+  height:2.5em;
+  width:2.5em;
+  margin:0 1em;
+  border:2px solid #fff;
+  border-radius:100%;
+  text-align:center;
+}
+.m-btn[:disabled] {color:#222}
+
+.m-btn[class^="i-"]:before, 
+.m-btn[class*=" i-"]:before,
+.m-btn:before {margin:0;}
+
+.m-text {
+  text-shadow: 1px 1px 4px rgba(150, 150, 150, 1);
+}
+
+
+.m-loadingSpinner {
+  position: absolute;
+  width: 100%;
+  top:50%;
+  left: 0;
+  font-size:6em;
+  text-align:center;
+  text-shadow: 1px 1px 4px rgba(150, 150, 150, 1);
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 .e-colorSlide {
@@ -36,6 +105,13 @@ body, html {
 	    background-size: 200% 100%;
 	    background-position: 100%;
 }
+
+.e-restingBG {
+  background-color: #aabbed;
+  animation-name: colorPulse;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+}
 .e-colorSlide.is-slid {
   transition: all 0.3s cubic-bezier(0.000, 0.000, 0.230, 1);
   background-position: 0%;
@@ -43,4 +119,16 @@ body, html {
 .e-colorSlide--shadow {
   position:absolute;
   text-shadow: 1px 1px 2px rgba(150, 150, 150, 1);
+}
+
+@keyframes colorPulse {
+  0% {
+    background-color: #7f90c1;
+  }
+  50% {
+    background-color: #576ba5;
+  }
+  100 {
+    background-color: #7f90c1;
+  }
 }

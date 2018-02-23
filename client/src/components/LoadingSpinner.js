@@ -2,7 +2,9 @@ import React from 'react';
 
 const LoadingSpinner = () => {
   return (
-    <span className="m-loadingSpinner i-spinner e-spin"></span>
+    <div className="m-loadingSpinner">
+      <span className="i-spinner e-spin"></span>
+    </div>
   );
 }
 

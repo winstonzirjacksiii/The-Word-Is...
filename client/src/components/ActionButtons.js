@@ -15,10 +15,10 @@ function ActionButtons({isResting, isListening, startPlaying, nextWord}) {
     <nav>
       {
         !isListening ?
-        <button onClick={startPlaying}>Start Playing</button> :
-        <button onClick={nextWord} {...opts}>Skip Word</button>
+        <button aria-label="Start" className="m-btn i-play" onClick={startPlaying}></button> :
+        <button aria-label="Next Word" className="m-btn i-fast-fw" onClick={nextWord} {...opts}></button>
       }
-      <button id="stopButton" {...stopOpts}>Stop Playing</button>
+      <button aria-label="Stop" className="m-btn i-stop" id="stopButton" {...stopOpts}></button>
     </nav>
   )
 }

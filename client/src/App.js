@@ -10,8 +10,8 @@ import './css/Animation.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
 
-// let apiRoot = ""
-let apiRoot = "//localhost:3002"
+let apiRoot = ""
+// apiRoot = "//localhost:3002"
 
 const initialActiveState = {
   "phrase": false, 
@@ -170,7 +170,7 @@ class App extends Component {
   render() {
     const {currentWord, text, timeLeft, score, topScore, isPlaying, active, isListening, isResting} = this.state;
     return (
-      <div className="App">
+      <div className="m-app">
         <Header currentWord={currentWord} 
                 text={text}
                 active={active}

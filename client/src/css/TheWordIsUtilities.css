@@ -50,7 +50,7 @@
   /* Uncomment for 3D effect */
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
-.i-play:before { content: '\e800'; } /* '' */
-.i-stop:before { content: '\e801'; } /* '' */
-.i-fast-fw:before { content: '\e802'; } /* '' */
-.i-spinner:before { content: '\e834'; margin-left: .2em;} /* '' */
+.i-play:before { content: '\e800'; padding-left:3px; }
+.i-stop:before { content: '\e801'; }
+.i-fast-fw:before { content: '\e802'; padding-left:5px; }
+.i-spinner:before { content: '\e834'; margin-left: .2em;}
