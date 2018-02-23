@@ -5,11 +5,13 @@ import ActionButtons from './components/ActionButtons';
 import { getWord } from './modules/wordlist';
 
 import './css/App.css';
+import './css/TheWordIsUtilities.css';
+import './css/Animation.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
 
-let apiRoot = ""
-// let apiRoot = "//localhost:3002"
+// let apiRoot = ""
+let apiRoot = "//localhost:3002"
 
 const initialActiveState = {
   "phrase": false, 
