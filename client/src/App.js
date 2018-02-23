@@ -4,7 +4,7 @@ import InfoPanel from './components/InfoPanel';
 import ActionButtons from './components/ActionButtons';
 import { getWord } from './modules/wordlist';
 
-import './App.css';
+import './css/App.css';
 
 import recognizeMic from 'watson-speech/speech-to-text/recognize-microphone';
 
