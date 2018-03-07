@@ -149,6 +149,7 @@ class App extends Component {
 
         this.stream.on('data', (data) => {
           if (!this.state.isResting) { 
+            // console.log(data);
             this.setState({
               text: data.alternatives[0].transcript
             });
